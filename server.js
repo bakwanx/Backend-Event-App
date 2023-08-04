@@ -19,46 +19,51 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/', routes);
 
 //routes
-routes.get('/', (req, res) => {
-    const events = [];
-    number = 20;
-    while (number >= 0) {
-        var presenterName = faker.name.firstName();
-        var quota = randomIntFromInterval(0, 100);
-        var audience = [];
-        presenter = {
-            name: presenterName,
-            presenterImage: faker.image.cats(),
-            rating: `${randomIntFromInterval(1,5)}.0`,
-            job: faker.name.jobType(),
-            about: faker.lorem.paragraphs(2),
-            email: `${presenterName}@gmail.com`
-        };
-        for (let i = 0; i < quota; i++) {
-            audience.push({
-                name: faker.name.firstName(),
-                image: faker.image.cats(),
-                date: faker.date.future(),
-            });
-        }
+routes.get('/news/:pageSize/:page', (req, res) => {
+    let pageSize = req.params.pageSize;
+    let page = req.params.page;
+    var events = [];
+    number = 0;
+    while (number < pageSize) {
         events.push({
-            id: number,
-            presenter: presenter,
-            eventName: faker.company.catchPhrase(),
-            description: faker.lorem.paragraphs(5),
-            price: faker.finance.amount(25, 100, 3, 'Rp '),
-            isOnline: faker.datatype.boolean(),
-            quota: quota,
-            audience: audience,
-            image: faker.image.cats(),
-            city: `${faker.address.city()}, ${faker.address.country()}`,
-            date: faker.date.future(),
+            author: faker.name.firstName(),
+            title: faker.lorem.paragraphs(1),
+            description: faker.lorem.paragraphs(1),
+            content: faker.lorem.paragraphs(5),
+            urlToImage: `https://picsum.photos/id/${randomIntFromInterval(0,100)}/480/640`,
+            publishedAt: faker.date.future()
         });
-        number--;
+        number++;
     }
-    res.status(200).send({
-        data: events
-    });
+    setTimeout(()=> {
+        res.status(200).send({
+            articles: events
+        });
+     }
+     ,1000);
+});
+
+routes.get('/news', (req, res) => {
+    var events = [];
+    number = 0;
+    while (number < 5) {
+        events.push({
+            author: faker.name.firstName(),
+            title: faker.lorem.paragraphs(1),
+            description: faker.lorem.paragraphs(1),
+            content: faker.lorem.paragraphs(5),
+            urlToImage: `https://picsum.photos/id/${randomIntFromInterval(0,100)}/480/640`,
+            publishedAt: faker.date.future()
+        });
+        number++;
+    }
+    setTimeout(()=> {
+        res.status(200).send({
+            articles: events
+        });
+     }
+     ,1000);
+   
 });
 
 function randomIntFromInterval(min, max) { // min and max included 
